@@ -1,0 +1,19 @@
+# Environments
+.env
+
+# Python compilation files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ai_venv/
+.venv/
+
+# IDE files
+.vscode/
+
+# Streamlit
+.streamlit/

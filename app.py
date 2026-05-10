@@ -27,6 +27,13 @@ end_date = st.sidebar.date_input("End Date", today)
 
 exclude_unknown = st.sidebar.checkbox("Exclude Unknown Prices", value=False)
 
+st.sidebar.markdown("---")
+st.sidebar.header("Map Settings")
+map_style = st.sidebar.selectbox(
+    "Map Provider",
+    ["Google Maps", "Google Satellite", "CartoDB (Clean/Light)", "Esri Satellite", "OpenStreetMap"]
+)
+
 # Create cached wrapper functions to prevent redundant API calls
 @st.cache_data(show_spinner=False)
 def fetch_subject_property(addr1, addr2):
@@ -136,8 +143,17 @@ if st.session_state.search_clicked:
                     selected_rows = event.selection.rows
 
                 with col1:
-                    # Initialize Folium Map centered on your house
-                    m = folium.Map(location=[sub_lat, sub_lon], zoom_start=15)
+                    # Configure selected map tiles
+                    if map_style == "OpenStreetMap":
+                        m = folium.Map(location=[sub_lat, sub_lon], zoom_start=15)
+                    elif map_style == "CartoDB (Clean/Light)":
+                        m = folium.Map(location=[sub_lat, sub_lon], zoom_start=15, tiles="CartoDB positron")
+                    elif map_style == "Google Maps":
+                        m = folium.Map(location=[sub_lat, sub_lon], zoom_start=15, tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", attr="Google")
+                    elif map_style == "Google Satellite":
+                        m = folium.Map(location=[sub_lat, sub_lon], zoom_start=15, tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", attr="Google")
+                    elif map_style == "Esri Satellite":
+                        m = folium.Map(location=[sub_lat, sub_lon], zoom_start=15, tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", attr="Esri")
                     
                     # Add Target Property Marker (Red)
                     folium.Marker(
