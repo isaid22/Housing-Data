@@ -102,10 +102,17 @@ if st.session_state.search_clicked:
                 fmt_beds = str(beds) if beds != "Unknown" else "Unknown"
                 fmt_baths = str(baths) if baths != "Unknown" else "Unknown"
                 
+                # Calculate Price per SqFt
+                if isinstance(sale_amt, (int, float)) and isinstance(sqft, (int, float)) and float(sqft) > 0:
+                    price_per_sqft = f"${float(sale_amt) / float(sqft):,.2f}"
+                else:
+                    price_per_sqft = "Unknown"
+                
                 map_data.append({
                     "Address": addr,
                     "Price": fmt_price,
                     "SqFt": fmt_sqft,
+                    "Price/SqFt": price_per_sqft,
                     "Beds": fmt_beds,
                     "Baths": fmt_baths,
                     "Date": date,
@@ -169,7 +176,7 @@ if st.session_state.search_clicked:
                         marker_color = "orange" if is_selected else "blue"
                         icon_name = "star" if is_selected else "usd"
                         
-                        tooltip_html = f"<b>#{row['ID']} - {row['Address']}</b><br>Price: {row['Price']}<br>Size: {row['SqFt']}<br>Beds: {row['Beds']} | Baths: {row['Baths']}<br>Date: {row['Date']}"
+                        tooltip_html = f"<b>#{row['ID']} - {row['Address']}</b><br>Price: {row['Price']}<br>Price/SqFt: {row['Price/SqFt']}<br>Size: {row['SqFt']}<br>Beds: {row['Beds']} | Baths: {row['Baths']}<br>Date: {row['Date']}"
                         folium.Marker(
                             [row["Lat"], row["Lon"]],
                             tooltip=tooltip_html,
